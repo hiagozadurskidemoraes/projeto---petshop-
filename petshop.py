@@ -1,6 +1,6 @@
 from clientes import menu_clientes
-# from produtos import menu_produtos
-# from atendimentos import menu_atendimentos
+from produtos import menu_produtos
+from atendimentos import menu_atendimentos
 
 def menu_principal():
     while True:
@@ -8,8 +8,8 @@ def menu_principal():
         print("     PETSHOP - SISTEMA       ")
         print("=============================")
         print("1. Clientes e Animais")
-        # print("2. Produtos e Serviços")
-        # print("3. Atendimentos")
+        print("2. Produtos e Serviços")
+        print("3. Atendimentos")
         print("0. Sair")
         print("-----------------------------")
 
@@ -17,10 +17,10 @@ def menu_principal():
 
         if opcao == "1":
             menu_clientes()
-        # elif opcao == "2":
-        #     menu_produtos()
-        # elif opcao == "3":
-        #     menu_atendimentos()
+        elif opcao == "2":
+            menu_produtos()
+        elif opcao == "3":
+            menu_atendimentos()
         elif opcao == "0":
             print("\nSaindo... Até mais!")
             break
