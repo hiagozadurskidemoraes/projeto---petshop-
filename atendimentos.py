@@ -1,21 +1,7 @@
-import pickle
-import os
+import sqlite3
+from banco import conectar, inicializar_banco
 from clientes import carregar_clientes
 from produtos import carregar_produtos
-
-ARQUIVO = "dados/atendimentos.pkl"
-
-def carregar_atendimentos():
-    if not os.path.exists("dados"):
-        os.makedirs("dados")
-    if not os.path.exists(ARQUIVO):
-        return []
-    with open(ARQUIVO, "rb") as f:
-        return pickle.load(f)
-
-def salvar_atendimentos(atendimentos):
-    with open(ARQUIVO, "wb") as f:
-        pickle.dump(atendimentos, f)
 
 def registrar_atendimento():
     clientes = carregar_clientes()
@@ -31,18 +17,17 @@ def registrar_atendimento():
     print("\n--- REGISTRAR ATENDIMENTO ---")
 
     print("\nClientes:")
-    for i, c in enumerate(clientes):
-        print(f"  [{i+1}] {c['nome']}")
+    for c in clientes:
+        print(f"  [{c['id']}] {c['nome']}")
     try:
-        ic = int(input("\nEscolha o cliente: ")) - 1
-        if not (0 <= ic < len(clientes)):
-            print("\nNúmero inválido.")
+        id_cliente = int(input("\nDigite o ID do cliente: "))
+        cliente = next((c for c in clientes if c['id'] == id_cliente), None)
+        if not cliente:
+            print("\nCliente não encontrado.")
             return
     except ValueError:
         print("\nEntrada inválida.")
         return
-
-    cliente = clientes[ic]
 
     if not cliente["animais"]:
         print("\nEsse cliente não tem animais cadastrados.")
@@ -52,7 +37,7 @@ def registrar_atendimento():
     for i, a in enumerate(cliente["animais"]):
         print(f"  [{i+1}] {a['nome']} ({a['especie']})")
     try:
-        ia = int(input("\nEscolha o animal: ")) - 1
+        ia = int(input("\nEscolha o número do animal: ")) - 1
         if not (0 <= ia < len(cliente["animais"])):
             print("\nNúmero inválido.")
             return
@@ -63,53 +48,52 @@ def registrar_atendimento():
     animal = cliente["animais"][ia]
 
     print("\nProdutos e Serviços:")
-    for i, p in enumerate(produtos):
-        print(f"  [{i+1}] {p['nome']} - R$ {p['preco']}")
+    for p in produtos:
+        print(f"  [{p['id']}] {p['nome']} - R$ {p['preco']}")
     try:
-        ip = int(input("\nEscolha o produto ou serviço: ")) - 1
-        if not (0 <= ip < len(produtos)):
-            print("\nNúmero inválido.")
+        id_produto = int(input("\nDigite o ID do produto ou serviço: "))
+        produto = next((p for p in produtos if p['id'] == id_produto), None)
+        if not produto:
+            print("\nProduto não encontrado.")
             return
     except ValueError:
         print("\nEntrada inválida.")
         return
 
-    produto = produtos[ip]
     data = input("\nData do atendimento (ex: 12/06/2026): ")
     obs = input("Observações (ou Enter para pular): ")
 
-    atendimento = {
-        "cliente": cliente["nome"],
-        "animal": animal["nome"],
-        "produto_servico": produto["nome"],
-        "valor": produto["preco"],
-        "data": data,
-        "obs": obs
-    }
-
-    atendimentos = carregar_atendimentos()
-    atendimentos.append(atendimento)
-    salvar_atendimentos(atendimentos)
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO atendimentos (cliente_nome, animal_nome, produto_servico, valor, data, obs) VALUES (?, ?, ?, ?, ?, ?)",
+                   (cliente["nome"], animal["nome"], produto["nome"], produto["preco"], data, obs))
+    conn.commit()
+    conn.close()
     print(f"\n✔ Atendimento registrado com sucesso!")
 
 def listar_atendimentos():
-    atendimentos = carregar_atendimentos()
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM atendimentos")
+    atendimentos = cursor.fetchall()
+    conn.close()
 
     if not atendimentos:
         print("\nNenhum atendimento registrado ainda.")
         return
 
     print("\n--- LISTA DE ATENDIMENTOS ---")
-    for i, a in enumerate(atendimentos):
-        print(f"\n[{i+1}] Cliente: {a['cliente']}")
-        print(f"    Animal: {a['animal']}")
-        print(f"    Serviço/Produto: {a['produto_servico']}")
-        print(f"    Valor: R$ {a['valor']}")
-        print(f"    Data: {a['data']}")
-        if a['obs']:
-            print(f"    Obs: {a['obs']}")
+    for a in atendimentos:
+        print(f"\n[{a[0]}] Cliente: {a[1]}")
+        print(f"    Animal: {a[2]}")
+        print(f"    Serviço/Produto: {a[3]}")
+        print(f"    Valor: R$ {a[4]}")
+        print(f"    Data: {a[5]}")
+        if a[6]:
+            print(f"    Obs: {a[6]}")
 
 def menu_atendimentos():
+    inicializar_banco()
     while True:
         print("\n=============================")
         print("  MÓDULO INTEGRADOR          ")

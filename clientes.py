@@ -1,19 +1,5 @@
-import pickle
-import os
-
-ARQUIVO = "dados/clientes.pkl"
-
-def carregar_clientes():
-    if not os.path.exists("dados"):
-        os.makedirs("dados")
-    if not os.path.exists(ARQUIVO):
-        return []
-    with open(ARQUIVO, "rb") as f:
-        return pickle.load(f)
-
-def salvar_clientes(clientes):
-    with open(ARQUIVO, "wb") as f:
-        pickle.dump(clientes, f)
+import sqlite3
+from banco import conectar, inicializar_banco
 
 def cadastrar_cliente():
     print("\n--- CADASTRAR CLIENTE ---")
@@ -22,92 +8,116 @@ def cadastrar_cliente():
     telefone = input("Telefone: ")
     endereco = input("Endereço: ")
 
-    novo_cliente = {
-        "nome": nome,
-        "cpf": cpf,
-        "telefone": telefone,
-        "endereco": endereco,
-        "animais": []
-    }
-
-    clientes = carregar_clientes()
-    clientes.append(novo_cliente)
-    salvar_clientes(clientes)
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO clientes (nome, cpf, telefone, endereco) VALUES (?, ?, ?, ?)",
+                   (nome, cpf, telefone, endereco))
+    conn.commit()
+    conn.close()
     print(f"\n✔ Cliente '{nome}' cadastrado com sucesso!")
 
 def listar_clientes():
-    clientes = carregar_clientes()
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM clientes")
+    clientes = cursor.fetchall()
+    conn.close()
 
     if not clientes:
         print("\nNenhum cliente cadastrado ainda.")
-        return
+        return clientes
 
     print("\n--- LISTA DE CLIENTES ---")
-    for i, c in enumerate(clientes):
-        print(f"\n[{i+1}] {c['nome']}")
-        print(f"    CPF: {c['cpf']}")
-        print(f"    Telefone: {c['telefone']}")
-        print(f"    Endereço: {c['endereco']}")
+    for c in clientes:
+        print(f"\n[{c[0]}] {c[1]}")
+        print(f"    CPF: {c[2]}")
+        print(f"    Telefone: {c[3]}")
+        print(f"    Endereço: {c[4]}")
 
-        if c["animais"]:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM animais WHERE cliente_id = ?", (c[0],))
+        animais = cursor.fetchall()
+        conn.close()
+
+        if animais:
             print("    Animais:")
-            for a in c["animais"]:
-                print(f"      - {a['nome']} | {a['especie']} | {a['raca']} | {a['idade']} anos")
+            for a in animais:
+                print(f"      - {a[1]} | {a[2]} | {a[3]} | {a[4]} anos")
         else:
             print("    Animais: nenhum cadastrado")
 
-def remover_cliente():
-    clientes = carregar_clientes()
+    return clientes
 
+def remover_cliente():
+    clientes = listar_clientes()
     if not clientes:
-        print("\nNenhum cliente cadastrado.")
         return
 
-    listar_clientes()
     try:
-        escolha = int(input("\nDigite o número do cliente a remover: ")) - 1
-        if 0 <= escolha < len(clientes):
-            removido = clientes.pop(escolha)
-            salvar_clientes(clientes)
-            print(f"\n✔ Cliente '{removido['nome']}' removido com sucesso!")
-        else:
-            print("\nNúmero inválido.")
+        id_cliente = int(input("\nDigite o ID do cliente a remover: "))
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM animais WHERE cliente_id = ?", (id_cliente,))
+        cursor.execute("DELETE FROM clientes WHERE id = ?", (id_cliente,))
+        conn.commit()
+        conn.close()
+        print(f"\n✔ Cliente removido com sucesso!")
     except ValueError:
-        print("\nEntrada inválida. Digite um número.")
+        print("\nEntrada inválida.")
 
 def cadastrar_animal():
-    clientes = carregar_clientes()
-
+    clientes = listar_clientes()
     if not clientes:
         print("\nNenhum cliente cadastrado. Cadastre um cliente primeiro.")
         return
 
-    listar_clientes()
     try:
-        escolha = int(input("\nDigite o número do dono do animal: ")) - 1
-        if 0 <= escolha < len(clientes):
-            print("\n--- CADASTRAR ANIMAL ---")
-            nome = input("Nome do animal: ")
-            especie = input("Espécie (cão, gato, etc.): ")
-            raca = input("Raça: ")
-            idade = input("Idade (anos): ")
+        id_cliente = int(input("\nDigite o ID do dono do animal: "))
+        print("\n--- CADASTRAR ANIMAL ---")
+        nome = input("Nome do animal: ")
+        especie = input("Espécie (cão, gato, etc.): ")
+        raca = input("Raça: ")
+        idade = input("Idade (anos): ")
 
-            animal = {
-                "nome": nome,
-                "especie": especie,
-                "raca": raca,
-                "idade": idade
-            }
-
-            clientes[escolha]["animais"].append(animal)
-            salvar_clientes(clientes)
-            print(f"\n✔ Animal '{nome}' cadastrado para '{clientes[escolha]['nome']}'!")
-        else:
-            print("\nNúmero inválido.")
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO animais (nome, especie, raca, idade, cliente_id) VALUES (?, ?, ?, ?, ?)",
+                       (nome, especie, raca, idade, id_cliente))
+        conn.commit()
+        conn.close()
+        print(f"\n✔ Animal '{nome}' cadastrado com sucesso!")
     except ValueError:
-        print("\nEntrada inválida. Digite um número.")
+        print("\nEntrada inválida.")
+
+def carregar_clientes():
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM clientes")
+    clientes_raw = cursor.fetchall()
+    conn.close()
+
+    clientes = []
+    for c in clientes_raw:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM animais WHERE cliente_id = ?", (c[0],))
+        animais_raw = cursor.fetchall()
+        conn.close()
+
+        animais = [{"nome": a[1], "especie": a[2], "raca": a[3], "idade": a[4]} for a in animais_raw]
+        clientes.append({
+            "id": c[0],
+            "nome": c[1],
+            "cpf": c[2],
+            "telefone": c[3],
+            "endereco": c[4],
+            "animais": animais
+        })
+    return clientes
 
 def menu_clientes():
+    inicializar_banco()
     while True:
         print("\n=============================")
         print("   MÓDULO 1 - CLIENTES       ")
@@ -133,6 +143,3 @@ def menu_clientes():
             break
         else:
             print("\nOpção inválida. Tente novamente.")
-
-if __name__ == "__main__":
-    menu_clientes()

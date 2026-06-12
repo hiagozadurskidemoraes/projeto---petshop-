@@ -1,19 +1,5 @@
-import pickle
-import os
-
-ARQUIVO = "dados/produtos.pkl"
-
-def carregar_produtos():
-    if not os.path.exists("dados"):
-        os.makedirs("dados")
-    if not os.path.exists(ARQUIVO):
-        return []
-    with open(ARQUIVO, "rb") as f:
-        return pickle.load(f)
-
-def salvar_produtos(produtos):
-    with open(ARQUIVO, "wb") as f:
-        pickle.dump(produtos, f)
+import sqlite3
+from banco import conectar, inicializar_banco
 
 def cadastrar_produto():
     print("\n--- CADASTRAR PRODUTO ---")
@@ -22,75 +8,90 @@ def cadastrar_produto():
     preco = input("Preço: R$ ")
     estoque = input("Quantidade em estoque: ")
 
-    produto = {
-        "nome": nome,
-        "categoria": categoria,
-        "preco": preco,
-        "estoque": estoque
-    }
-
-    produtos = carregar_produtos()
-    produtos.append(produto)
-    salvar_produtos(produtos)
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO produtos (nome, categoria, preco, estoque, tipo) VALUES (?, ?, ?, ?, ?)",
+                   (nome, categoria, preco, estoque, "produto"))
+    conn.commit()
+    conn.close()
     print(f"\n✔ Produto '{nome}' cadastrado com sucesso!")
 
 def cadastrar_servico():
     print("\n--- CADASTRAR SERVIÇO ---")
     nome = input("Nome do serviço: ")
-    descricao = input("Descrição: ")
+    categoria = input("Descrição: ")
     preco = input("Preço: R$ ")
 
-    servico = {
-        "nome": nome,
-        "descricao": descricao,
-        "preco": preco,
-        "tipo": "servico"
-    }
-
-    produtos = carregar_produtos()
-    produtos.append(servico)
-    salvar_produtos(produtos)
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO produtos (nome, categoria, preco, estoque, tipo) VALUES (?, ?, ?, ?, ?)",
+                   (nome, categoria, preco, "0", "servico"))
+    conn.commit()
+    conn.close()
     print(f"\n✔ Serviço '{nome}' cadastrado com sucesso!")
 
 def listar_produtos():
-    produtos = carregar_produtos()
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM produtos")
+    produtos = cursor.fetchall()
+    conn.close()
 
     if not produtos:
         print("\nNenhum produto ou serviço cadastrado ainda.")
-        return
+        return produtos
 
     print("\n--- LISTA DE PRODUTOS E SERVIÇOS ---")
-    for i, p in enumerate(produtos):
-        if p.get("tipo") == "servico":
-            print(f"\n[{i+1}] SERVIÇO: {p['nome']}")
-            print(f"    Descrição: {p['descricao']}")
-            print(f"    Preço: R$ {p['preco']}")
+    for p in produtos:
+        if p[5] == "servico":
+            print(f"\n[{p[0]}] SERVIÇO: {p[1]}")
+            print(f"    Descrição: {p[2]}")
+            print(f"    Preço: R$ {p[3]}")
         else:
-            print(f"\n[{i+1}] PRODUTO: {p['nome']}")
-            print(f"    Categoria: {p['categoria']}")
-            print(f"    Preço: R$ {p['preco']}")
-            print(f"    Estoque: {p['estoque']} unidades")
+            print(f"\n[{p[0]}] PRODUTO: {p[1]}")
+            print(f"    Categoria: {p[2]}")
+            print(f"    Preço: R$ {p[3]}")
+            print(f"    Estoque: {p[4]} unidades")
+
+    return produtos
 
 def remover_produto():
-    produtos = carregar_produtos()
-
+    produtos = listar_produtos()
     if not produtos:
-        print("\nNenhum produto ou serviço cadastrado.")
         return
 
-    listar_produtos()
     try:
-        escolha = int(input("\nDigite o número do item a remover: ")) - 1
-        if 0 <= escolha < len(produtos):
-            removido = produtos.pop(escolha)
-            salvar_produtos(produtos)
-            print(f"\n✔ '{removido['nome']}' removido com sucesso!")
-        else:
-            print("\nNúmero inválido.")
+        id_produto = int(input("\nDigite o ID do item a remover: "))
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM produtos WHERE id = ?", (id_produto,))
+        conn.commit()
+        conn.close()
+        print(f"\n✔ Item removido com sucesso!")
     except ValueError:
-        print("\nEntrada inválida. Digite um número.")
+        print("\nEntrada inválida.")
+
+def carregar_produtos():
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM produtos")
+    produtos_raw = cursor.fetchall()
+    conn.close()
+
+    produtos = []
+    for p in produtos_raw:
+        produtos.append({
+            "id": p[0],
+            "nome": p[1],
+            "categoria": p[2],
+            "preco": p[3],
+            "estoque": p[4],
+            "tipo": p[5]
+        })
+    return produtos
 
 def menu_produtos():
+    inicializar_banco()
     while True:
         print("\n=============================")
         print("  MÓDULO 2 - PRODUTOS        ")
