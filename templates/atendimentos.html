@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atendimentos - PetCare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <header id="header">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48" fill="#ff6b00"/>
+                <ellipse cx="30" cy="25" rx="10" ry="14" fill="white" transform="rotate(-20 30 25)"/>
+                <ellipse cx="70" cy="25" rx="10" ry="14" fill="white" transform="rotate(20 70 25)"/>
+                <ellipse cx="15" cy="50" rx="8" ry="12" fill="white" transform="rotate(-30 15 50)"/>
+                <ellipse cx="85" cy="50" rx="8" ry="12" fill="white" transform="rotate(30 85 50)"/>
+                <ellipse cx="50" cy="65" rx="22" ry="18" fill="white"/>
+                <text x="50" y="72" text-anchor="middle" font-size="18" fill="#ff6b00" font-weight="bold">PC</text>
+            </svg>
+            <span>PetCare</span>
+        </div>
+        <nav>
+            <a href="/"><i class="fas fa-home"></i> Início</a>
+            <a href="/clientes"><i class="fas fa-users"></i> Clientes</a>
+            <a href="/produtos"><i class="fas fa-box"></i> Produtos</a>
+            <a href="/atendimentos"><i class="fas fa-clipboard-list"></i> Atendimentos</a>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1><i class="fas fa-clipboard-list"></i> Atendimentos</h1>
+        <p>Histórico e relatório de atendimentos realizados</p>
+    </div>
+
+    <main>
+        <!-- RELATÓRIO DE FATURAMENTO -->
+        <div class="relatorio-box">
+            <i class="fas fa-chart-line"></i>
+            <div>
+                <h3>Faturamento Total</h3>
+                <span>R$ {{ total }}</span>
+            </div>
+        </div>
+
+        <h2><i class="fas fa-list"></i> Lista de Atendimentos</h2>
+        {% for a in atendimentos %}
+        <div class="cliente-card">
+            <strong><i class="fas fa-user"></i> {{ a[1] }}</strong>
+            <p><i class="fas fa-paw"></i> Animal: {{ a[2] }}</p>
+            <p><i class="fas fa-box"></i> Serviço/Produto: {{ a[3] }}</p>
+            <p><i class="fas fa-dollar-sign"></i> Valor: R$ {{ a[4] }}</p>
+            <p><i class="fas fa-calendar"></i> Data: {{ a[5] }}</p>
+            {% if a[6] %}
+            <p><i class="fas fa-comment"></i> Obs: {{ a[6] }}</p>
+            {% endif %}
+        </div>
+        {% else %}
+        <p>Nenhum atendimento registrado ainda.</p>
+        {% endfor %}
+    </main>
+
+    <a href="https://wa.me/5541999999999" class="whatsapp" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+</body>
+</html>
