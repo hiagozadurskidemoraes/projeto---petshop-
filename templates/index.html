@@ -11,7 +11,6 @@
 </head>
 <body>
 
-    <!-- HEADER -->
     <header id="header">
         <div class="logo">
             <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -27,21 +26,19 @@
         </div>
         <nav>
             <a href="/"><i class="fas fa-home"></i> Início</a>
-            <a href="/clientes"><i class="fas fa-users"></i> Clientes</a>
             <a href="/produtos"><i class="fas fa-box"></i> Produtos</a>
-            <a href="/atendimentos"><i class="fas fa-clipboard-list"></i> Atendimentos</a>
+            <a href="/admin/login" class="btn-login"><i class="fas fa-user-shield"></i> Área Admin</a>
         </nav>
     </header>
 
-    <!-- BANNER -->
     <section class="banner">
         <div class="banner-content">
             <span class="badge"><i class="fas fa-paw"></i> Bem-vindo à PetCare</span>
             <h1>Cuidando do seu pet<br>com <span>amor</span> e carinho</h1>
             <p>Banho, tosa, consultas e muito mais para o seu melhor amigo!</p>
             <div class="banner-btns">
-                <a href="/clientes" class="btn-primary"><i class="fas fa-plus"></i> Cadastre seu Pet</a>
-                <a href="#servicos" class="btn-secondary"><i class="fas fa-list"></i> Ver Serviços</a>
+                <a href="/produtos" class="btn-primary"><i class="fas fa-list"></i> Ver Produtos</a>
+                <a href="#servicos" class="btn-secondary"><i class="fas fa-paw"></i> Nossos Serviços</a>
             </div>
         </div>
         <div class="banner-image">
@@ -49,7 +46,6 @@
         </div>
     </section>
 
-    <!-- STATS -->
     <section class="stats">
         <div class="stat-item">
             <h3 class="counter" data-target="5000">0</h3>
@@ -69,7 +65,6 @@
         </div>
     </section>
 
-    <!-- SERVIÇOS -->
     <section class="servicos" id="servicos">
         <div class="section-header">
             <span class="section-badge">O que oferecemos</span>
@@ -104,7 +99,6 @@
         </div>
     </section>
 
-    <!-- SOBRE -->
     <section class="sobre">
         <div class="sobre-img">
             <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500&q=80" alt="Pets felizes">
@@ -123,7 +117,6 @@
         </div>
     </section>
 
-    <!-- EQUIPE -->
     <section class="equipe">
         <div class="section-header">
             <span class="section-badge">Nosso time</span>
@@ -152,7 +145,6 @@
         </div>
     </section>
 
-    <!-- DEPOIMENTOS -->
     <section class="depoimentos">
         <div class="section-header">
             <span class="section-badge">O que dizem</span>
@@ -196,7 +188,6 @@
         </div>
     </section>
 
-    <!-- GALERIA -->
     <section class="galeria">
         <div class="section-header">
             <span class="section-badge">Nossos pets</span>
@@ -213,7 +204,6 @@
         </div>
     </section>
 
-    <!-- LOCALIZAÇÃO -->
     <section class="localizacao">
         <div class="section-header">
             <span class="section-badge">Onde estamos</span>
@@ -257,7 +247,6 @@
         </div>
     </section>
 
-    <!-- FOOTER -->
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
@@ -274,9 +263,8 @@
             <div class="footer-links">
                 <h4>Navegação</h4>
                 <a href="/"><i class="fas fa-home"></i> Início</a>
-                <a href="/clientes"><i class="fas fa-users"></i> Clientes</a>
                 <a href="/produtos"><i class="fas fa-box"></i> Produtos</a>
-                <a href="/atendimentos"><i class="fas fa-clipboard-list"></i> Atendimentos</a>
+                <a href="/admin/login"><i class="fas fa-user-shield"></i> Área Admin</a>
             </div>
             <div class="footer-servicos">
                 <h4>Serviços</h4>
@@ -297,12 +285,10 @@
         </div>
     </footer>
 
-    <!-- BOTÃO VOLTAR AO TOPO -->
     <button id="voltarTopo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- WHATSAPP FLUTUANTE -->
     <a href="https://wa.me/5541999999999" class="whatsapp" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>

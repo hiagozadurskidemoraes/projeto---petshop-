@@ -902,3 +902,87 @@ ul li {
     font-size: 14px;
     margin: 3px 0;
 }
+
+/* LOGIN / CADASTRO */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ff6b00, #ff9a3c);
+    padding: 20px;
+}
+
+.auth-box {
+    background: white;
+    padding: 45px 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.auth-logo h2 {
+    color: #ff6b00;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.auth-box h3 {
+    color: #222;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.auth-box h3 i {
+    color: #ff6b00;
+    margin-right: 8px;
+}
+
+.auth-sub {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.auth-box form input {
+    margin: 8px 0;
+}
+
+.auth-box form button {
+    margin-top: 15px;
+}
+
+.auth-erro {
+    background: #fde8e8;
+    color: #c0392b;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.auth-link {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+.auth-link a {
+    color: #ff6b00;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}

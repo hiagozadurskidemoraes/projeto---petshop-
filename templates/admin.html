@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - PetCare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <header id="header">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48" fill="#ff6b00"/>
+                <ellipse cx="30" cy="25" rx="10" ry="14" fill="white" transform="rotate(-20 30 25)"/>
+                <ellipse cx="70" cy="25" rx="10" ry="14" fill="white" transform="rotate(20 70 25)"/>
+                <ellipse cx="15" cy="50" rx="8" ry="12" fill="white" transform="rotate(-30 15 50)"/>
+                <ellipse cx="85" cy="50" rx="8" ry="12" fill="white" transform="rotate(30 85 50)"/>
+                <ellipse cx="50" cy="65" rx="22" ry="18" fill="white"/>
+                <text x="50" y="72" text-anchor="middle" font-size="18" fill="#ff6b00" font-weight="bold">PC</text>
+            </svg>
+            <span>PetCare Admin</span>
+        </div>
+        <nav>
+            <a href="/admin"><i class="fas fa-tachometer-alt"></i> Painel</a>
+            <a href="/admin/clientes"><i class="fas fa-users"></i> Clientes</a>
+            <a href="/admin/produtos"><i class="fas fa-box"></i> Produtos</a>
+            <a href="/admin/atendimentos"><i class="fas fa-clipboard-list"></i> Atendimentos</a>
+            <a href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1><i class="fas fa-tachometer-alt"></i> Painel Administrativo</h1>
+        <p>Bem-vindo, {{ session.nome_usuario if session.nome_usuario else "Admin" }}! Gerencie seu petshop por aqui.</p>
+    </div>
+
+    <main>
+        <div class="cards" style="margin-top:20px">
+            <a href="/admin/clientes" class="card visible" style="text-decoration:none">
+                <div class="card-icon"><i class="fas fa-users"></i></div>
+                <h3>Clientes</h3>
+                <p>Cadastre e gerencie clientes e seus animais</p>
+            </a>
+            <a href="/admin/produtos" class="card visible" style="text-decoration:none">
+                <div class="card-icon"><i class="fas fa-box"></i></div>
+                <h3>Produtos</h3>
+                <p>Cadastre produtos e serviços oferecidos</p>
+            </a>
+            <a href="/admin/atendimentos" class="card visible" style="text-decoration:none">
+                <div class="card-icon"><i class="fas fa-clipboard-list"></i></div>
+                <h3>Atendimentos</h3>
+                <p>Veja o histórico e faturamento</p>
+            </a>
+            <a href="/" class="card visible" style="text-decoration:none">
+                <div class="card-icon"><i class="fas fa-globe"></i></div>
+                <h3>Ver Site</h3>
+                <p>Visualizar o site público</p>
+            </a>
+        </div>
+    </main>
+
+</body>
+</html>

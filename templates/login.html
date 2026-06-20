@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin - PetCare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-logo">
+                <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="48" fill="#ff6b00"/>
+                    <ellipse cx="30" cy="25" rx="10" ry="14" fill="white" transform="rotate(-20 30 25)"/>
+                    <ellipse cx="70" cy="25" rx="10" ry="14" fill="white" transform="rotate(20 70 25)"/>
+                    <ellipse cx="15" cy="50" rx="8" ry="12" fill="white" transform="rotate(-30 15 50)"/>
+                    <ellipse cx="85" cy="50" rx="8" ry="12" fill="white" transform="rotate(30 85 50)"/>
+                    <ellipse cx="50" cy="65" rx="22" ry="18" fill="white"/>
+                    <text x="50" y="72" text-anchor="middle" font-size="18" fill="#ff6b00" font-weight="bold">PC</text>
+                </svg>
+                <h2>PetCare Admin</h2>
+            </div>
+
+            <h3><i class="fas fa-lock"></i> Acesso Restrito</h3>
+            <p class="auth-sub">Entre com sua conta para gerenciar o sistema</p>
+
+            {% if erro %}
+            <div class="auth-erro"><i class="fas fa-exclamation-circle"></i> {{ erro }}</div>
+            {% endif %}
+
+            <form method="POST">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="senha" placeholder="Senha" required>
+                <button type="submit"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+            </form>
+
+            <p class="auth-link">Não tem conta? <a href="/admin/cadastro">Cadastre-se aqui</a></p>
+            <p class="auth-link"><a href="/"><i class="fas fa-arrow-left"></i> Voltar ao site</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Admin PetCare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <header id="header">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48" fill="#ff6b00"/>
+                <ellipse cx="30" cy="25" rx="10" ry="14" fill="white" transform="rotate(-20 30 25)"/>
+                <ellipse cx="70" cy="25" rx="10" ry="14" fill="white" transform="rotate(20 70 25)"/>
+                <ellipse cx="15" cy="50" rx="8" ry="12" fill="white" transform="rotate(-30 15 50)"/>
+                <ellipse cx="85" cy="50" rx="8" ry="12" fill="white" transform="rotate(30 85 50)"/>
+                <ellipse cx="50" cy="65" rx="22" ry="18" fill="white"/>
+                <text x="50" y="72" text-anchor="middle" font-size="18" fill="#ff6b00" font-weight="bold">PC</text>
+            </svg>
+            <span>PetCare Admin</span>
+        </div>
+        <nav>
+            <a href="/admin"><i class="fas fa-tachometer-alt"></i> Painel</a>
+            <a href="/admin/clientes"><i class="fas fa-users"></i> Clientes</a>
+            <a href="/admin/produtos"><i class="fas fa-box"></i> Produtos</a>
+            <a href="/admin/atendimentos"><i class="fas fa-clipboard-list"></i> Atendimentos</a>
+            <a href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1><i class="fas fa-users"></i> Clientes</h1>
+        <p>Gerencie os clientes e seus animais</p>
+    </div>
+
+    <main>
+        <h2><i class="fas fa-user-plus"></i> Cadastrar Cliente</h2>
+        <form action="/admin/clientes/novo" method="POST">
+            <input type="text" name="nome" placeholder="Nome completo" required>
+            <input type="text" name="cpf" placeholder="CPF" required>
+            <input type="text" name="telefone" placeholder="Telefone" required>
+            <input type="text" name="endereco" placeholder="Endereço" required>
+            <button type="submit"><i class="fas fa-plus"></i> Cadastrar</button>
+        </form>
+
+        <h2><i class="fas fa-search"></i> Buscar Cliente</h2>
+        <div class="busca-form">
+            <input type="text" id="busca" placeholder="Digite o nome do cliente..." oninput="buscarCliente()">
+            <button onclick="buscarCliente()"><i class="fas fa-search"></i></button>
+        </div>
+
+        <h2><i class="fas fa-list"></i> Lista de Clientes</h2>
+        <div id="lista-clientes">
+            {% for c in clientes %}
+            <div class="cliente-card" data-nome="{{ c.nome|lower }}">
+                <strong><i class="fas fa-user"></i> {{ c.nome }}</strong>
+                <p><i class="fas fa-id-card"></i> CPF: {{ c.cpf }}</p>
+                <p><i class="fas fa-phone"></i> Tel: {{ c.telefone }}</p>
+                <p><i class="fas fa-map-marker-alt"></i> {{ c.endereco }}</p>
+                {% if c.animais %}
+                <p style="margin-top:8px"><i class="fas fa-paw"></i> <strong>Animais:</strong></p>
+                <div>
+                    {% for a in c.animais %}
+                    <span class="animal-tag">🐾 {{ a.nome }} ({{ a.especie }})</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p><i class="fas fa-paw"></i> Nenhum animal cadastrado</p>
+                {% endif %}
+            </div>
+            {% else %}
+            <p>Nenhum cliente cadastrado ainda.</p>
+            {% endfor %}
+        </div>
+    </main>
+
+    <script>
+        function buscarCliente() {
+            const termo = document.getElementById('busca').value.toLowerCase();
+            const cards = document.querySelectorAll('.cliente-card');
+            cards.forEach(card => {
+                const nome = card.dataset.nome;
+                card.style.display = nome.includes(termo) ? 'block' : 'none';
+            });
+        }
+    </script>
+
+</body>
+</html>

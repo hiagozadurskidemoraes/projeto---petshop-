@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - Admin PetCare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <header id="header">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48" fill="#ff6b00"/>
+                <ellipse cx="30" cy="25" rx="10" ry="14" fill="white" transform="rotate(-20 30 25)"/>
+                <ellipse cx="70" cy="25" rx="10" ry="14" fill="white" transform="rotate(20 70 25)"/>
+                <ellipse cx="15" cy="50" rx="8" ry="12" fill="white" transform="rotate(-30 15 50)"/>
+                <ellipse cx="85" cy="50" rx="8" ry="12" fill="white" transform="rotate(30 85 50)"/>
+                <ellipse cx="50" cy="65" rx="22" ry="18" fill="white"/>
+                <text x="50" y="72" text-anchor="middle" font-size="18" fill="#ff6b00" font-weight="bold">PC</text>
+            </svg>
+            <span>PetCare Admin</span>
+        </div>
+        <nav>
+            <a href="/admin"><i class="fas fa-tachometer-alt"></i> Painel</a>
+            <a href="/admin/clientes"><i class="fas fa-users"></i> Clientes</a>
+            <a href="/admin/produtos"><i class="fas fa-box"></i> Produtos</a>
+            <a href="/admin/atendimentos"><i class="fas fa-clipboard-list"></i> Atendimentos</a>
+            <a href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1><i class="fas fa-box"></i> Produtos e Serviços</h1>
+        <p>Gerencie o catálogo de produtos e serviços</p>
+    </div>
+
+    <main>
+        <h2><i class="fas fa-plus-circle"></i> Cadastrar Produto ou Serviço</h2>
+        <form action="/admin/produtos/novo" method="POST">
+            <input type="text" name="nome" placeholder="Nome" required>
+            <input type="text" name="categoria" placeholder="Categoria ou Descrição" required>
+            <input type="text" name="preco" placeholder="Preço (ex: 29.90)" required>
+            <input type="text" name="estoque" placeholder="Estoque (só para produtos)">
+            <select name="tipo">
+                <option value="produto">📦 Produto</option>
+                <option value="servico">🔧 Serviço</option>
+            </select>
+            <button type="submit"><i class="fas fa-plus"></i> Cadastrar</button>
+        </form>
+
+        <h2><i class="fas fa-list"></i> Lista de Produtos e Serviços</h2>
+        <div class="cards" style="justify-content:flex-start">
+            {% for p in produtos %}
+            <div class="card visible" style="text-align:left; max-width:280px">
+                {% if p.tipo == "servico" %}
+                <div class="card-icon" style="text-align:center"><i class="fas fa-tools"></i></div>
+                <span class="animal-tag" style="margin-bottom:10px">Serviço</span>
+                {% else %}
+                <div class="card-icon" style="text-align:center"><i class="fas fa-box-open"></i></div>
+                <span class="animal-tag" style="margin-bottom:10px">Produto</span>
+                {% endif %}
+                <h3>{{ p.nome }}</h3>
+                <p><i class="fas fa-tag" style="color:#ff6b00"></i> {{ p.categoria }}</p>
+                <p><i class="fas fa-dollar-sign" style="color:#ff6b00"></i> R$ {{ p.preco }}</p>
+                {% if p.tipo != "servico" %}
+                <p><i class="fas fa-warehouse" style="color:#ff6b00"></i> Estoque: {{ p.estoque }}</p>
+                {% endif %}
+            </div>
+            {% else %}
+            <p>Nenhum produto cadastrado ainda.</p>
+            {% endfor %}
+        </div>
+    </main>
+
+</body>
+</html>

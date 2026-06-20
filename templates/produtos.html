@@ -25,48 +25,61 @@
         </div>
         <nav>
             <a href="/"><i class="fas fa-home"></i> Início</a>
-            <a href="/clientes"><i class="fas fa-users"></i> Clientes</a>
             <a href="/produtos"><i class="fas fa-box"></i> Produtos</a>
-            <a href="/atendimentos"><i class="fas fa-clipboard-list"></i> Atendimentos</a>
+            <a href="/admin/login" class="btn-login"><i class="fas fa-user-shield"></i> Área Admin</a>
         </nav>
     </header>
 
     <div class="page-header">
-        <h1><i class="fas fa-box"></i> Produtos e Serviços</h1>
-        <p>Gerencie o catálogo de produtos e serviços</p>
+        <h1><i class="fas fa-box"></i> Nosso Catálogo</h1>
+        <p>Confira nossos produtos e serviços disponíveis</p>
     </div>
 
     <main>
-        <h2><i class="fas fa-plus-circle"></i> Cadastrar Produto ou Serviço</h2>
-        <form action="/produtos/novo" method="POST">
-            <input type="text" name="nome" placeholder="Nome" required>
-            <input type="text" name="categoria" placeholder="Categoria ou Descrição" required>
-            <input type="text" name="preco" placeholder="Preço (ex: 29.90)" required>
-            <input type="text" name="estoque" placeholder="Estoque (só para produtos)">
-            <select name="tipo">
-                <option value="produto">📦 Produto</option>
-                <option value="servico">🔧 Serviço</option>
-            </select>
-            <button type="submit"><i class="fas fa-plus"></i> Cadastrar</button>
-        </form>
-
-        <h2><i class="fas fa-list"></i> Lista de Produtos e Serviços</h2>
+        <h2><i class="fas fa-list"></i> Produtos e Serviços</h2>
         <div class="cards" style="justify-content:flex-start">
             {% for p in produtos %}
-            <div class="card visible" style="text-align:left; max-width:280px">
-                {% if p.tipo == "servico" %}
-                <div class="card-icon" style="text-align:center"><i class="fas fa-tools"></i></div>
-                <span class="animal-tag" style="margin-bottom:10px">Serviço</span>
+            {% set cat = (p.categoria or "")|lower %}
+            {% set nome_l = (p.nome or "")|lower %}
+            <div class="card visible" style="text-align:left; max-width:280px; padding:0; overflow:hidden">
+
+                {% if "ração" in cat or "racao" in cat or "ração" in nome_l or "racao" in nome_l %}
+                    <img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&q=80" alt="Ração" style="width:100%;height:160px;object-fit:cover">
+                {% elif "banho" in cat or "tosa" in cat or "banho" in nome_l or "tosa" in nome_l %}
+                    <img src="https://images.unsplash.com/photo-1581888227599-779811939961?w=400&q=80" alt="Banho e Tosa" style="width:100%;height:160px;object-fit:cover">
+                {% elif "shampoo" in cat or "shampoo" in nome_l %}
+                    <img src="https://images.unsplash.com/photo-1601758003122-53c40e686a19?w=400&q=80" alt="Shampoo" style="width:100%;height:160px;object-fit:cover">
+                {% elif "vacina" in cat or "vacina" in nome_l %}
+                    <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=400&q=80" alt="Vacina" style="width:100%;height:160px;object-fit:cover">
+                {% elif "consulta" in cat or "veterin" in cat or "consulta" in nome_l %}
+                    <img src="https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?w=400&q=80" alt="Consulta" style="width:100%;height:160px;object-fit:cover">
+                {% elif "brinquedo" in cat or "brinquedo" in nome_l %}
+                    <img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=400&q=80" alt="Brinquedo" style="width:100%;height:160px;object-fit:cover">
+                {% elif "petisco" in cat or "petisco" in nome_l %}
+                    <img src="https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=400&q=80" alt="Petisco" style="width:100%;height:160px;object-fit:cover">
+                {% elif "coleira" in cat or "coleira" in nome_l or "guia" in cat or "guia" in nome_l %}
+                    <img src="https://images.unsplash.com/photo-1601758174039-3ffcae0bcf6e?w=400&q=80" alt="Coleira" style="width:100%;height:160px;object-fit:cover">
+                {% elif "remedio" in cat or "remédio" in cat or "medicamento" in cat %}
+                    <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&q=80" alt="Remédio" style="width:100%;height:160px;object-fit:cover">
+                {% elif p.tipo == "servico" %}
+                    <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&q=80" alt="Serviço" style="width:100%;height:160px;object-fit:cover">
                 {% else %}
-                <div class="card-icon" style="text-align:center"><i class="fas fa-box-open"></i></div>
-                <span class="animal-tag" style="margin-bottom:10px">Produto</span>
+                    <img src="https://images.unsplash.com/photo-1601758125946-6ac8acdcfaca?w=400&q=80" alt="Produto" style="width:100%;height:160px;object-fit:cover">
                 {% endif %}
-                <h3>{{ p.nome }}</h3>
-                <p><i class="fas fa-tag" style="color:#ff6b00"></i> {{ p.categoria }}</p>
-                <p><i class="fas fa-dollar-sign" style="color:#ff6b00"></i> R$ {{ p.preco }}</p>
-                {% if p.tipo != "servico" %}
-                <p><i class="fas fa-warehouse" style="color:#ff6b00"></i> Estoque: {{ p.estoque }}</p>
-                {% endif %}
+
+                <div style="padding:20px">
+                    {% if p.tipo == "servico" %}
+                    <span class="animal-tag" style="margin-bottom:10px">Serviço</span>
+                    {% else %}
+                    <span class="animal-tag" style="margin-bottom:10px">Produto</span>
+                    {% endif %}
+                    <h3>{{ p.nome }}</h3>
+                    <p><i class="fas fa-tag" style="color:#ff6b00"></i> {{ p.categoria }}</p>
+                    <p><i class="fas fa-dollar-sign" style="color:#ff6b00"></i> R$ {{ p.preco }}</p>
+                    {% if p.tipo != "servico" %}
+                    <p><i class="fas fa-warehouse" style="color:#ff6b00"></i> Estoque: {{ p.estoque }}</p>
+                    {% endif %}
+                </div>
             </div>
             {% else %}
             <p>Nenhum produto cadastrado ainda.</p>
